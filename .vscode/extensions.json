@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "charliermarsh.ruff",
+    "matangover.mypy",
+    "ms-python.flake8",
+    "ply-ct.vscode-ply"
+  ]
+}
