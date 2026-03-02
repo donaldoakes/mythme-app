@@ -1,5 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
+from app.utils.fetch import fetch_dailyvid
+
+dailyvid = fetch_dailyvid()
 
 
 def submit():
@@ -15,13 +18,13 @@ def submit():
 
 
 root = tk.Tk()
-root.title("MythMe App")
+root.title("MythMe")
 root.resizable(False, False)
 
 mainframe = ttk.Frame(root, padding=16)
 mainframe.grid(sticky="nsew")
 
-ttk.Label(mainframe, text="MythMe App", font=("TkDefaultFont", 14, "bold")).grid(
+ttk.Label(mainframe, text="Daily Video", font=("TkDefaultFont", 14, "bold")).grid(
     row=0, column=0, columnspan=2, pady=(0, 12)
 )
 
@@ -30,7 +33,9 @@ name_entry = ttk.Entry(mainframe, width=24)
 name_entry.grid(row=1, column=1, pady=4)
 
 ttk.Label(mainframe, text="Option:").grid(row=2, column=0, sticky="w", padx=(0, 8))
-combo = ttk.Combobox(mainframe, values=["Option A", "Option B", "Option C"], state="readonly", width=22)
+combo = ttk.Combobox(
+    mainframe, values=["Option A", "Option B", "Option C"], state="readonly", width=22
+)
 combo.current(0)
 combo.grid(row=2, column=1, pady=4)
 
