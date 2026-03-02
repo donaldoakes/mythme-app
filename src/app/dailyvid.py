@@ -1,14 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
-from app.utils import fetch
+from app.utils import fetch, lirc
 from app.utils.frontend import play_video
 
 myth_config = fetch.mythtv_config()
 dailyvid = fetch.dailyvid()
 
 date_format = "%b %d, %Y"
-
 
 root = tk.Tk()
 root.title("mythme")
@@ -101,6 +100,12 @@ ttk.Label(mainframe, textvariable=latest).grid(
 
 update_widgets(True)
 
+
+def on_lirc(button: str):
+    print("BUTTON PRESSED: " + button)
+
+
+lirc.start_listener(on_lirc)
 
 if __name__ == "__main__":
     root.mainloop()
