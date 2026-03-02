@@ -1,5 +1,6 @@
 import socket
 from app.utils.config import config
+from app.utils.focus import set_focus
 
 
 def play_video(vidfile: str):
@@ -19,3 +20,5 @@ def play_video(vidfile: str):
     print("Response from the server: " + data)
     client_socket.send(b"exit")
     client_socket.close()
+
+    set_focus("MythTV Frontend")
