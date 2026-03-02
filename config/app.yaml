@@ -1,0 +1,7 @@
+mythme:
+  # api_base: http://192.168.0.70:8000/api
+  api_base: http://127.0.0.1:8000/api
+mythfrontend:
+  socket_host: 127.0.0.1
+  socket_port: 6546
+  # test_mode: true

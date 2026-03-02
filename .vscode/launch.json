@@ -2,10 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "app",
+      "name": "dailyvid",
       "type": "debugpy",
       "request": "launch",
-      "program": "src/mythme/app.py",
+      "program": "src/app/dailyvid.py",
+      "env": {
+        "PYTHONPATH": "./src"
+      },
       "console": "integratedTerminal",
       "justMyCode": true
     }
