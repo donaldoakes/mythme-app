@@ -6,14 +6,17 @@ from app.model.video import DailyVid, Video
 from app.utils.config import config
 
 ApiMethod = Literal["GET", "PATCH"]
+DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 
-def api_call(path: str, method: ApiMethod = "GET") -> Optional[dict]:
+def api_call(
+    path: str, method: ApiMethod = "GET", body: Optional[dict] = None
+) -> Optional[dict]:
     url = f"{config.mythme.api_base}/{path}"
     headers = {"Accept": "application/json"}
 
     if method == "PATCH":
-        response = requests.patch(url, headers=headers)  # nosec B113
+        response = requests.patch(url, headers=headers, json=body)  # nosec B113
     else:
         response = requests.get(url, headers=headers)  # nosec B113
 
@@ -32,14 +35,25 @@ def dailyvid() -> DailyVid:
     if resp is None:
         raise ValueError("Daily video not retrieved")
     if "earliest" in resp:
-        resp["earliest"] = datetime.strptime(resp["earliest"], "%Y-%m-%dT%H:%M:%S")
+        resp["earliest"] = datetime.strptime(resp["earliest"], DATE_FORMAT)
     if "latest" in resp:
-        resp["latest"] = datetime.strptime(resp["latest"], "%Y-%m-%dT%H:%M:%S")
+        resp["latest"] = datetime.strptime(resp["latest"], DATE_FORMAT)
 
     dailyvid = DailyVid(**resp)
     del resp["video"]["id"]
     dailyvid.video = Video(**(resp["video"]))
     return dailyvid
+
+
+def vid_watched(video: Video):
+    api_call(
+        path="dailyvid",
+        method="PATCH",
+        body={
+            "file": video.file,
+            "watched": (video.watched or datetime.now()).strftime(DATE_FORMAT),
+        },
+    )
 
 
 def mythtv_config() -> MythtvConfig:

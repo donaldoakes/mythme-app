@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 from datetime import datetime
 
 
@@ -6,6 +7,7 @@ from datetime import datetime
 class Video:
     title: str
     file: str
+    watched: Optional[datetime] = None
 
 
 @dataclass

@@ -4,4 +4,4 @@ mythme:
 mythfrontend:
   socket_host: 127.0.0.1
   socket_port: 6546
-  test_mode: true
+  # test_mode: true

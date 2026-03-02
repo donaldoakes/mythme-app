@@ -28,15 +28,14 @@ def update_widgets(playable: bool):
     if playable:
         title.set(dailyvid.video.title)
         action.set("Play")
-        progress["value"] = dailyvid.watched * 100 / dailyvid.total
-        watched.set(f"Watched {dailyvid.watched} of {dailyvid.total} videos")
-        earliest.set(f"Earliest: {dailyvid.earliest.strftime(date_format)}")
-        latest.set(f"Latest: {dailyvid.latest.strftime(date_format)}")
     else:
         title.set("")
         action.set("Next")
-        watched.set(f"Watched {dailyvid.watched + 1} of {dailyvid.total} videos")
-        latest.set(f"Latest: {datetime.now().strftime(date_format)}")
+
+    progress["value"] = dailyvid.watched * 100 / dailyvid.total
+    watched.set(f"Watched {dailyvid.watched} of {dailyvid.total} videos")
+    earliest.set(f"Earliest: {dailyvid.earliest.strftime(date_format)}")
+    latest.set(f"Latest: {dailyvid.latest.strftime(date_format)}")
 
 
 def play():
@@ -45,7 +44,10 @@ def play():
     print(f"Playing video: {vidfile}")
     title.set("Playing...")
     play_video(vidfile)
+    dailyvid.watched += 1
+    dailyvid.video.watched = dailyvid.latest = datetime.now()
     update_widgets(False)
+    fetch.vid_watched(dailyvid.video)
 
 
 def next():

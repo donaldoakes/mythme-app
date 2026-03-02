@@ -19,6 +19,8 @@ def load_config() -> AppConfig:
             socket_host=mythfrontend["socket_host"],
             socket_port=mythfrontend["socket_port"],
         )
+        if "test_mode" in mythfrontend:
+            mythfrontend_config.test_mode = mythfrontend["test_mode"]
 
     if mythme_config and mythfrontend_config:
         return AppConfig(mythme=mythme_config, mythfrontend=mythfrontend_config)
