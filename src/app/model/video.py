@@ -11,6 +11,7 @@ class Video:
 @dataclass
 class DailyVid:
     video: Video
-    latest: datetime
     watched: int
     total: int
+    earliest: datetime
+    latest: datetime

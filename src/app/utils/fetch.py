@@ -31,6 +31,8 @@ def dailyvid() -> DailyVid:
     resp = api_call(path="dailyvid")
     if resp is None:
         raise ValueError("Daily video not retrieved")
+    if "earliest" in resp:
+        resp["earliest"] = datetime.strptime(resp["earliest"], "%Y-%m-%dT%H:%M:%S")
     if "latest" in resp:
         resp["latest"] = datetime.strptime(resp["latest"], "%Y-%m-%dT%H:%M:%S")
 
