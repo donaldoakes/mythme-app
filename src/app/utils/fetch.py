@@ -1,7 +1,8 @@
 import requests
 from typing import Literal, Optional
 from datetime import datetime
-from app.model.video import DailyVid
+from app.model.config import MythtvConfig
+from app.model.video import DailyVid, Video
 from app.utils.config import config
 
 ApiMethod = Literal["GET", "PATCH"]
@@ -26,11 +27,21 @@ def api_call(path: str, method: ApiMethod = "GET") -> Optional[dict]:
         raise Exception(f"{method} {url} FAILED: {response.status_code}")
 
 
-def fetch_dailyvid() -> DailyVid:
+def dailyvid() -> DailyVid:
     resp = api_call(path="dailyvid")
     if resp is None:
         raise ValueError("Daily video not retrieved")
     if "latest" in resp:
         resp["latest"] = datetime.strptime(resp["latest"], "%Y-%m-%dT%H:%M:%S")
 
-    return DailyVid(**resp)
+    dailyvid = DailyVid(**resp)
+    del resp["video"]["id"]
+    dailyvid.video = Video(**(resp["video"]))
+    return dailyvid
+
+
+def mythtv_config() -> MythtvConfig:
+    resp = api_call(path="configs/mythtv")
+    if resp is None:
+        raise ValueError("MythTV config not found")
+    return MythtvConfig(storage_groups=resp["storage_groups"])

@@ -1,20 +1,25 @@
 import tkinter as tk
 from tkinter import ttk
-from app.utils.fetch import fetch_dailyvid
+from app.utils import fetch
 
-dailyvid = fetch_dailyvid()
+myth_config = fetch.mythtv_config()
+dailyvid = fetch.dailyvid()
 
 
-def submit():
-    name = name_entry.get().strip()
-    option = combo.get()
-    if not check_var.get():
-        status_label.config(text="Please agree to the terms.", foreground="red")
-        return
-    if name:
-        status_label.config(text=f"Hello, {name}! Option: {option}", foreground="green")
-    else:
-        status_label.config(text="Please enter your name.", foreground="red")
+def play():
+    vidspath = myth_config.storage_groups["Videos"][0]
+    vidfile = f"{vidspath}/{dailyvid.video.file}"
+    print(f"Playing video: {vidfile}")
+
+    # name = name_entry.get().strip()
+    # option = combo.get()
+    # if not check_var.get():
+    #     status_label.config(text="Please agree to the terms.", foreground="red")
+    #     return
+    # if name:
+    #     status_label.config(text=f"Hello, {name}! Option: {option}", foreground="green")
+    # else:
+    #     status_label.config(text="Please enter your name.", foreground="red")
 
 
 root = tk.Tk()
@@ -44,7 +49,7 @@ ttk.Checkbutton(mainframe, text="Agree to terms", variable=check_var).grid(
     row=3, column=0, columnspan=2, pady=8, sticky="w"
 )
 
-ttk.Button(mainframe, text="Submit", command=submit).grid(
+ttk.Button(mainframe, text="Play", command=play).grid(
     row=4, column=0, columnspan=2, pady=(4, 8)
 )
 
