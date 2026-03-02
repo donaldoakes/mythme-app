@@ -1,7 +1,7 @@
 import os
 import yaml
 from functools import cache
-from app.model.config import AppConfig, MythmeConfig
+from app.model.config import AppConfig, MythfrontendConfig, MythmeConfig
 
 
 @cache
@@ -12,8 +12,17 @@ def load_config() -> AppConfig:
         cfg = yaml.safe_load(yf)
     if "mythme" in cfg:
         mythme = cfg["mythme"]
-        if "api_base" in mythme:
-            return AppConfig(mythme=MythmeConfig(api_base=mythme["api_base"]))
+        mythme_config = MythmeConfig(api_base=mythme["api_base"])
+    if "mythfrontend" in cfg:
+        mythfrontend = cfg["mythfrontend"]
+        mythfrontend_config = MythfrontendConfig(
+            socket_host=mythfrontend["socket_host"],
+            socket_port=mythfrontend["socket_port"],
+        )
+
+    if mythme_config and mythfrontend_config:
+        return AppConfig(mythme=mythme_config, mythfrontend=mythfrontend_config)
+
     raise ValueError(f"Bad config: {yaml_file}")
 
 

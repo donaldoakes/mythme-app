@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
 from app.utils import fetch
+from app.utils.frontend import play_video
 
 myth_config = fetch.mythtv_config()
 dailyvid = fetch.dailyvid()
@@ -42,6 +43,8 @@ def play():
     vidspath = myth_config.storage_groups["Videos"][0]
     vidfile = f"{vidspath}/{dailyvid.video.file}"
     print(f"Playing video: {vidfile}")
+    title.set("Playing...")
+    play_video(vidfile)
     update_widgets(False)
 
 
