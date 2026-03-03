@@ -4,14 +4,14 @@ from datetime import datetime
 from app.utils import fetch, lirc, focus, background
 from app.utils.frontend import play_video, frontend_title
 
+WINDOW_TITLE = "mythme dailyvid"
+DATE_FORMAT = "%b %d, %Y"
+
 myth_config = fetch.mythtv_config()
 dailyvid = fetch.dailyvid()
 
-window_title = "mythme dailyvid"
-date_format = "%b %d, %Y"
-
 root = tk.Tk()
-root.title(window_title)
+root.title(WINDOW_TITLE)
 root.geometry("600x240")
 root.resizable(False, False)
 root.grid_rowconfigure(0, weight=1)
@@ -34,8 +34,8 @@ def update_widgets(playable: bool):
 
     progress["value"] = dailyvid.watched * 100 / dailyvid.total
     watched.set(f"Watched {dailyvid.watched} of {dailyvid.total} videos")
-    earliest.set(f"Earliest: {dailyvid.earliest.strftime(date_format)}")
-    latest.set(f"Latest: {dailyvid.latest.strftime(date_format)}")
+    earliest.set(f"Earliest: {dailyvid.earliest.strftime(DATE_FORMAT)}")
+    latest.set(f"Latest: {dailyvid.latest.strftime(DATE_FORMAT)}")
 
 
 def play():
@@ -108,7 +108,7 @@ update_widgets(True)
 
 def on_lirc(button: str):
     if button == "star":
-        focus.grab(window_title)
+        focus.grab(WINDOW_TITLE)
     elif button == "pound":
         focus.grab(frontend_title)
     elif button == "guide":
@@ -119,7 +119,9 @@ lirc.start_listener(on_lirc)
 
 
 def on_schedule():
-    root.after(0, next)
+    if action_button["text"] != "Play":
+        focus.grab(WINDOW_TITLE)
+        root.after(0, next)
 
 
 background.start_scheduler(on_schedule)

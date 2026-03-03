@@ -2,8 +2,7 @@ import threading
 import time
 from datetime import datetime, timedelta
 from typing import Callable
-
-SCHEDULE_HOUR = 3  # 3:00 am
+from app.utils.config import config
 
 
 def _seconds_until_next(hour: int) -> float:
@@ -15,23 +14,18 @@ def _seconds_until_next(hour: int) -> float:
     return (target - now).total_seconds()
 
 
-def start_scheduler(
-    callback: Callable[[], None],
-    hour: int = SCHEDULE_HOUR,
-) -> threading.Thread:
+def start_scheduler(callback: Callable[[], None]) -> threading.Thread:
     """Start a background daemon thread that calls callback every day at the scheduled hour.
 
     :param callback: Function to call at the scheduled time each day
     :type callback: Callable[[], None]
-    :param hour: Hour of day (0-23) to trigger the callback, defaults to 3 (3:00 am)
-    :type hour: int
     :return: The background thread running the scheduler
     :rtype: threading.Thread
     """
 
     def run() -> None:
         while True:
-            delay = _seconds_until_next(hour)
+            delay = _seconds_until_next(config.scheduler.hour)
             time.sleep(delay)
             try:
                 callback()

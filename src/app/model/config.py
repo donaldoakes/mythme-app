@@ -14,9 +14,22 @@ class MythfrontendConfig:
 
 
 @dataclass
+class LircConfig:
+    socket_path: str
+    debounce_interval: float
+
+
+@dataclass
+class SchedulerConfig:
+    hour: int  # 0-23, hour of day to trigger activation
+
+
+@dataclass
 class AppConfig:
     mythme: MythmeConfig
     mythfrontend: MythfrontendConfig
+    lirc: LircConfig
+    scheduler: SchedulerConfig
 
 
 @dataclass

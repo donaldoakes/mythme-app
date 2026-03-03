@@ -5,3 +5,8 @@ mythfrontend:
   socket_host: 127.0.0.1
   socket_port: 6546
   # test_mode: true
+lirc:
+  socket_path: /var/run/lirc/lircd
+  debounce_interval: 0.5
+schedule:
+  hour: 3 # 3 a.m.

@@ -2,17 +2,10 @@ import threading
 import time
 import socket
 from typing import Callable, Optional
-
-LIRC_SOCKET = "/var/run/lirc/lircd"
-
-DEBOUNCE_INTERVAL = 0.5  # seconds
+from app.utils.config import config
 
 
-def start_listener(
-    callback: Callable[[str], None],
-    socket_path: str = LIRC_SOCKET,
-    debounce_interval: float = DEBOUNCE_INTERVAL,
-) -> threading.Thread:
+def start_listener(callback: Callable[[str], None]) -> threading.Thread:
     """Start the LIRC listener in a background daemon thread.
 
     Invokes callback with the button name for each event. Repeated presses of
@@ -20,10 +13,6 @@ def start_listener(
 
     :param callback: Function called with the button name for each event
     :type callback: Callable[[str], None]
-    :param socket_path: Path to the LIRC socket, defaults to /var/run/lirc/lircd
-    :type socket_path: str
-    :param debounce_interval: Minimum seconds between processing the same button press
-    :type debounce_interval: float
     :return: The background thread running the listener
     :rtype: threading.Thread
     """
@@ -33,7 +22,7 @@ def start_listener(
     def debounced_callback(button: str) -> None:
         nonlocal last_button, last_time
         now = time.monotonic()
-        if button == last_button and (now - last_time) < debounce_interval:
+        if button == last_button and (now - last_time) < config.lirc.debounce_interval:
             return
         last_button = button
         last_time = now
@@ -41,7 +30,7 @@ def start_listener(
 
     def run() -> None:
         try:
-            listen(debounced_callback, socket_path)
+            listen(debounced_callback)
         except Exception as e:
             print(f"LIRC listener error: {e}")
 
@@ -50,7 +39,7 @@ def start_listener(
     return thread
 
 
-def listen(callback: Callable[[str], None], socket_path: str = LIRC_SOCKET) -> None:
+def listen(callback: Callable[[str], None]) -> None:
     """Listen for LIRC events and invoke callback with the button name that was pushed.
 
     LIRC event format: <code> <repeat> <button> <remote>
@@ -59,11 +48,9 @@ def listen(callback: Callable[[str], None], socket_path: str = LIRC_SOCKET) -> N
 
     :param callback: Function called with the button name for each event
     :type callback: Callable[[str], None]
-    :param socket_path: Path to the LIRC socket, defaults to /var/run/lirc/lircd
-    :type socket_path: str
     """
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-        sock.connect(socket_path)
+        sock.connect(config.lirc.socket_path)
         buf = ""
         while True:
             data = sock.recv(1024)
