@@ -119,8 +119,8 @@ lirc.start_listener(on_lirc)
 
 
 def on_schedule():
+    focus.grab(WINDOW_TITLE)
     if action_button["text"] != "Play":
-        focus.grab(WINDOW_TITLE)
         root.after(0, next)
 
 
