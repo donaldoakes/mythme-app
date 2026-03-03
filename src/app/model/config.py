@@ -20,7 +20,7 @@ class LircConfig:
 
 
 @dataclass
-class SchedulerConfig:
+class ScheduleConfig:
     hour: int  # 0-23, hour of day to trigger activation
 
 
@@ -29,7 +29,7 @@ class AppConfig:
     mythme: MythmeConfig
     mythfrontend: MythfrontendConfig
     lirc: LircConfig
-    scheduler: SchedulerConfig
+    schedule: ScheduleConfig
 
 
 @dataclass

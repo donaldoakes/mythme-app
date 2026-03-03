@@ -25,7 +25,7 @@ def start_scheduler(callback: Callable[[], None]) -> threading.Thread:
 
     def run() -> None:
         while True:
-            delay = _seconds_until_next(config.scheduler.hour)
+            delay = _seconds_until_next(config.schedule.hour)
             time.sleep(delay)
             try:
                 callback()

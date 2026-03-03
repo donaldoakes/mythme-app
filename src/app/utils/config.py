@@ -6,7 +6,7 @@ from app.model.config import (
     LircConfig,
     MythfrontendConfig,
     MythmeConfig,
-    SchedulerConfig,
+    ScheduleConfig,
 )
 
 
@@ -32,16 +32,16 @@ def load_config() -> AppConfig:
         lirc_config = LircConfig(
             socket_path=lirc["socket_path"], debounce_interval=lirc["debounce_interval"]
         )
-    if "scheduler" in cfg:
-        scheduler = cfg["scheduler"]
-        if "hour" in scheduler:
-            scheduler_config = SchedulerConfig(hour=scheduler["hour"])
+    if "schedule" in cfg:
+        schedule = cfg["schedule"]
+        if "hour" in schedule:
+            schedule_config = ScheduleConfig(hour=schedule["hour"])
     if mythme_config and mythfrontend_config:
         return AppConfig(
             mythme=mythme_config,
             mythfrontend=mythfrontend_config,
             lirc=lirc_config,
-            scheduler=scheduler_config,
+            schedule=schedule_config,
         )
 
     raise ValueError(f"Bad config: {yaml_file}")
