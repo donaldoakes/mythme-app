@@ -1,5 +1,9 @@
 import socket
+import time
+from app.utils import focus
 from app.utils.config import config
+
+frontend_title = "MythTV Frontend"
 
 
 def play_video(vidfile: str):
@@ -8,7 +12,8 @@ def play_video(vidfile: str):
     test_mode = config.mythfrontend.test_mode
 
     if test_mode:
-        print(f"TEST MODE: {vidfile}")
+        print(f"Test mode play file: {vidfile}")
+        time.sleep(5)
         return
 
     client_socket = socket.socket()
@@ -19,3 +24,5 @@ def play_video(vidfile: str):
     print("Response from the server: " + data)
     client_socket.send(b"exit")
     client_socket.close()
+
+    focus.grab(frontend_title)

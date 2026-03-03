@@ -1,0 +1,83 @@
+import lirc
+import asyncio
+import threading
+from typing import Tuple, Callable, Any
+
+
+def _make_client(name: str = "dailyvid", cache: bool = True):
+    return lirc.Client(name, cache=cache)
+
+
+def start_listener(
+    client_name: str = "dailyvid",
+    cache: bool = True,
+    loop: asyncio.AbstractEventLoop | None = None,
+) -> Tuple[asyncio.Queue, Callable[[float], Any]]:
+    """Start LIRC listener in a background thread.
+
+    Returns a tuple `(queue, stop)` where `queue` is an `asyncio.Queue`
+    receiving button names (or a sentinel `None` when the listener stops),
+    and `stop(timeout_secs)` is an `async`-callable to stop the background thread.
+    """
+    loop = loop or asyncio.get_event_loop()
+    client = _make_client(client_name, cache)
+    queue: asyncio.Queue = asyncio.Queue()
+    stop_event = threading.Event()
+
+    def _run():
+        try:
+            # Notify that client is connected (on the asyncio loop).
+            asyncio.run_coroutine_threadsafe(queue.put(("__info__", "connected")), loop)
+            while not stop_event.is_set():
+                try:
+                    code = client.blocking_receive()
+                except Exception as exc:
+                    asyncio.run_coroutine_threadsafe(
+                        queue.put(("__error__", str(exc))), loop
+                    )
+                    break
+
+                if code:
+                    for button_name in code:
+                        asyncio.run_coroutine_threadsafe(queue.put(button_name), loop)
+                else:
+                    # blocking_receive returned no data (timeout) — continue loop
+                    continue
+        finally:
+            try:
+                client.close()
+            except Exception:
+                pass
+            # signal consumer that listener stopped
+            asyncio.run_coroutine_threadsafe(queue.put(None), loop)
+
+    thread = threading.Thread(target=_run, daemon=True)
+    thread.start()
+
+    async def stop(timeout: float = 1.0):
+        stop_event.set()
+        thread.join(timeout)
+
+    return queue, stop
+
+
+def listen():
+    """CLI helper kept for backward compatibility — blocks and prints events."""
+    client = _make_client()
+    print("LIRC client connected. Press remote buttons...")
+
+    try:
+        while True:
+            code = client.blocking_receive()
+            if code:
+                for button_name in code:
+                    print(f"Received button: {button_name}")
+    except KeyboardInterrupt:
+        print("Exiting...")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        try:
+            client.close()
+        except Exception:
+            pass
