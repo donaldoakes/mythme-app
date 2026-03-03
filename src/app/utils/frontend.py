@@ -1,4 +1,5 @@
 import socket
+import time
 from app.utils.config import config
 from app.utils.focus import set_focus
 
@@ -9,7 +10,8 @@ def play_video(vidfile: str):
     test_mode = config.mythfrontend.test_mode
 
     if test_mode:
-        print(f"TEST MODE: {vidfile}")
+        print(f"Test mode play file: {vidfile}")
+        time.sleep(5)
         return
 
     client_socket = socket.socket()

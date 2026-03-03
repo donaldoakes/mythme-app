@@ -42,11 +42,15 @@ def play():
     vidfile = f"{vidspath}/{dailyvid.video.file}"
     print(f"Playing video: {vidfile}")
     title.set("Playing...")
-    play_video(vidfile)
-    dailyvid.watched += 1
-    dailyvid.video.watched = dailyvid.latest = datetime.now()
-    update_widgets(False)
-    fetch.vid_watched(dailyvid.video)
+
+    def after():
+        play_video(vidfile)
+        dailyvid.watched += 1
+        dailyvid.video.watched = dailyvid.latest = datetime.now()
+        update_widgets(False)
+        fetch.vid_watched(dailyvid.video)
+
+    root.after(100, after)
 
 
 def next():

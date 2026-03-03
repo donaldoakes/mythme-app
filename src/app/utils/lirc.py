@@ -1,6 +1,6 @@
 import threading
 import time
-import socket as socket_module
+import socket
 from typing import Callable, Optional
 
 LIRC_SOCKET = "/var/run/lirc/lircd"
@@ -62,7 +62,7 @@ def listen(callback: Callable[[str], None], socket_path: str = LIRC_SOCKET) -> N
     :param socket_path: Path to the LIRC socket, defaults to /var/run/lirc/lircd
     :type socket_path: str
     """
-    with socket_module.socket(socket_module.AF_UNIX, socket_module.SOCK_STREAM) as sock:
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
         sock.connect(socket_path)
         buf = ""
         while True:
