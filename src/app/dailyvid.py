@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
-from app.utils import fetch, lirc, focus
+from app.utils import fetch, lirc, focus, background
 from app.utils.frontend import play_video, frontend_title
 
 myth_config = fetch.mythtv_config()
@@ -116,6 +116,13 @@ def on_lirc(button: str):
 
 
 lirc.start_listener(on_lirc)
+
+
+def on_schedule():
+    root.after(0, next)
+
+
+background.start_scheduler(on_schedule)
 
 if __name__ == "__main__":
     root.mainloop()
