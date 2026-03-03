@@ -1,16 +1,17 @@
 import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
-from app.utils import fetch, lirc
-from app.utils.frontend import play_video
+from app.utils import fetch, lirc, focus
+from app.utils.frontend import play_video, frontend_title
 
 myth_config = fetch.mythtv_config()
 dailyvid = fetch.dailyvid()
 
+window_title = "mythme dailyvid"
 date_format = "%b %d, %Y"
 
 root = tk.Tk()
-root.title("mythme")
+root.title(window_title)
 root.geometry("600x240")
 root.resizable(False, False)
 root.grid_rowconfigure(0, weight=1)
@@ -106,7 +107,12 @@ update_widgets(True)
 
 
 def on_lirc(button: str):
-    print("BUTTON PRESSED: " + button)
+    if button == "star":
+        focus.grab(window_title)
+    elif button == "pound":
+        focus.grab(frontend_title)
+    elif button == "guide":
+        do_action()
 
 
 lirc.start_listener(on_lirc)

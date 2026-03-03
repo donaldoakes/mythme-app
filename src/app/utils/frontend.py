@@ -1,7 +1,9 @@
 import socket
 import time
+from app.utils import focus
 from app.utils.config import config
-from app.utils.focus import set_focus
+
+frontend_title = "MythTV Frontend"
 
 
 def play_video(vidfile: str):
@@ -23,4 +25,4 @@ def play_video(vidfile: str):
     client_socket.send(b"exit")
     client_socket.close()
 
-    set_focus("MythTV Frontend")
+    focus.grab(frontend_title)
