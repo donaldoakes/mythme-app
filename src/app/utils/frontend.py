@@ -16,6 +16,8 @@ def play_video(vidfile: str):
         time.sleep(5)
         return
 
+    focus.grab(frontend_title)
+
     client_socket = socket.socket()
     client_socket.connect((host, port))
 
@@ -24,5 +26,3 @@ def play_video(vidfile: str):
     print(f"Play response: '{response}'")
     client_socket.send(b"exit")
     client_socket.close()
-
-    focus.grab(frontend_title)
