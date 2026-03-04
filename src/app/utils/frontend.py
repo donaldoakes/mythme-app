@@ -19,13 +19,9 @@ def play_video(vidfile: str):
     client_socket = socket.socket()
     client_socket.connect((host, port))
 
-    client_socket.send(("jump mainmenu\n").encode("utf-8"))
-    response_data = client_socket.recv(1024).decode()
-    print(f"Jump response: '{response_data}'")
-    time.sleep(1)
     client_socket.send((f"play file {vidfile}\n").encode("utf-8"))
-    response_data = client_socket.recv(1024).decode()
-    print(f"Play response: '{response_data}'")
+    response = client_socket.recv(1024).decode()
+    print(f"Play response: '{response}'")
     client_socket.send(b"exit")
     client_socket.close()
 
