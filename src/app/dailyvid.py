@@ -72,6 +72,15 @@ def do_action():
         next()
 
 
+def on_key_press(event):
+    if event.char == "P" or event.char == "p":
+        play()
+    elif event.char == "N" or event.char == "n":
+        next()
+
+
+root.bind("<Key>", on_key_press)
+
 mainframe = ttk.Frame(root, padding=(12, 6, 12, 16))
 mainframe.grid(sticky="nsew")
 mainframe.grid_rowconfigure(1, weight=1)
@@ -85,7 +94,9 @@ ttk.Label(mainframe, textvariable=title, font=("TkDefaultFont", 12)).grid(
     row=1, column=0, columnspan=2
 )
 
-action_button = ttk.Button(mainframe, textvariable=action, command=do_action)
+action_button = ttk.Button(
+    mainframe, textvariable=action, underline=0, command=do_action
+)
 action_button.grid(row=2, column=0, columnspan=2, pady=(0, 8))
 
 progress = ttk.Progressbar(mainframe, length=500, mode="determinate")
